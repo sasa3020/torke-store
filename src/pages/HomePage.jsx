@@ -303,58 +303,6 @@ export const HomePage = () => {
           </div>
         </div>
       </section>
-
-      {/* Student Reviews & Testimonials */}
-      <section className="container">
-        <div className="text-center max-w-2xl mx-auto space-y-3 mb-10">
-          <h3 className="text-xs font-black text-sky-600 uppercase tracking-wider">آراء أوائل الجمهورية وطلابنا</h3>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-            ماذا يقول طلاب الثانوية عن متجر تورك؟
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-2xl border border-sky-100 shadow-sm space-y-3">
-            <div className="flex text-amber-400">
-              {[...Array(5)].map((_, i) => <Star key={i} size={15} fill="currentColor" />)}
-            </div>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              "كشاكيل نظام كورنيل من تورك فرقت جداً معايا في مراجعة ليلة الامتحان في الفيزياء، والورق بتاعها تحفة مش بيشف خالص!"
-            </p>
-            <div className="pt-2 border-t border-slate-100">
-              <p className="text-xs font-extrabold text-slate-800">مريم الشناوي</p>
-              <p className="text-[11px] text-sky-600">طالبة ثانوية عامة - الإسكندرية</p>
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-sky-100 shadow-sm space-y-3">
-            <div className="flex text-amber-400">
-              {[...Array(5)].map((_, i) => <Star key={i} size={15} fill="currentColor" />)}
-            </div>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              "الشحن الصاروخي حرفياً وصلني في أقل من 30 ساعة للمنصورة! وكود مستر عبد المعبود اتفعل في 5 دقايق أول ما رفعت الإيصال."
-            </p>
-            <div className="pt-2 border-t border-slate-100">
-              <p className="text-xs font-extrabold text-slate-800">أحمد شريف</p>
-              <p className="text-[11px] text-sky-600">شعبة علمي علوم - الدقهلية</p>
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-sky-100 shadow-sm space-y-3">
-            <div className="flex text-amber-400">
-              {[...Array(5)].map((_, i) => <Star key={i} size={15} fill="currentColor" />)}
-            </div>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              "أحسن خدمة عملاء بجد بيردوا على الواتساب على طول وساعدوني في اختيار كتب المعاصر الصح لبنتي في أولى ثانوي لغات."
-            </p>
-            <div className="pt-2 border-t border-slate-100">
-              <p className="text-xs font-extrabold text-slate-800">أ. نيفين عبد الله</p>
-              <p className="text-[11px] text-sky-600">ولي أمر طالبة - المعادي</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Interactive FAQ Section */}
       <FAQSection />
 

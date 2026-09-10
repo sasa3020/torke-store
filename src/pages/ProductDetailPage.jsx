@@ -82,9 +82,19 @@ export const ProductDetailPage = () => {
 
           <div className="grid grid-cols-3 gap-3 text-center text-xs">
             <div className="p-3 bg-sky-50/70 rounded-xl border border-sky-100 flex flex-col items-center gap-1">
-              <Truck size={18} className="text-sky-600" />
-              <span className="font-bold text-slate-800">شحن سريع</span>
-              <span className="text-[10px] text-slate-500">24-48 ساعة</span>
+              {product.category === 'Teacher Codes' ? (
+                <>
+                  <Zap size={18} className="text-emerald-600" />
+                  <span className="font-bold text-slate-800">بدون شحن</span>
+                  <span className="text-[10px] text-emerald-600 font-bold">تسليم فوري (0 ج.م)</span>
+                </>
+              ) : (
+                <>
+                  <Truck size={18} className="text-sky-600" />
+                  <span className="font-bold text-slate-800">شحن سريع</span>
+                  <span className="text-[10px] text-slate-500">24-48 ساعة</span>
+                </>
+              )}
             </div>
             <div className="p-3 bg-sky-50/70 rounded-xl border border-sky-100 flex flex-col items-center gap-1">
               <ShieldCheck size={18} className="text-emerald-600" />

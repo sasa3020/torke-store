@@ -315,13 +315,4 @@ export const INITIAL_STAFF = [
   }
 ];
 
-export const INITIAL_USER = {
-  id: 'user-demo-1',
-  fullName: 'عمر خالد المصري',
-  primaryPhone: '01012345678',
-  altPhone: '01198765432',
-  address: 'عمارة 14، شارع جامعة القاهرة، حي الدقي، محافظة الجيزة - شقة 5',
-  grade: '3rd Secondary', // Thanaweya Amma
-  email: 'omar.student@gmail.com',
-  registeredAt: '2024-09-01'
-};
+export const INITIAL_USER = null;

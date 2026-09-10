@@ -120,7 +120,7 @@ export const Footer = () => {
 
           {/* Useful Links & Policy */}
           <div className="space-y-3">
-            <h4 className="text-sm font-bold uppercase tracking-wider text-sky-400">خدمة الطلاب</h4>
+            <h4 className="text-sm font-bold uppercase tracking-wider text-sky-400">خدمة العملاء</h4>
             <ul className="space-y-2 text-sm text-slate-300">
               <li>
                 <a href="#faq-section" className="hover:text-sky-400 transition-colors">
@@ -128,13 +128,13 @@ export const Footer = () => {
                 </a>
               </li>
               <li>
-                <Link to="/profile" className="hover:text-sky-400 transition-colors">
-                  متابعة حالة طلبي
-                </Link>
+                <a href="#track-order" className="hover:text-sky-400 transition-colors">
+                  تتبع حالة طلبي
+                </a>
               </li>
               <li>
-                <Link to="/checkout" className="hover:text-sky-400 transition-colors">
-                  صفحة الدفع والشحن
+                <Link to="/profile" className="hover:text-sky-400 transition-colors">
+                  حسابي وطلباتي
                 </Link>
               </li>
               <li>

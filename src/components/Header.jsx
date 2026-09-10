@@ -37,9 +37,10 @@ export const Header = () => {
   const dropdownRef = useRef(null);
 
   const categories = [
-    {
-      name: 'Notebooks',
-      labelAr: 'كشاكيل وملخصات',
+    theme?.showNavNotebooks !== false && {
+      name: theme?.navNotebooksLabel || 'Notebooks',
+      originalCat: 'Notebooks',
+      labelAr: theme?.navNotebooksLabelAr || 'كشاكيل وملخصات',
       icon: <FileText size={18} className="text-sky-500" />,
       subCategories: [
         { name: 'Wirebound Notebooks', labelAr: 'كشاكيل سلك مقسمة' },
@@ -48,22 +49,24 @@ export const Header = () => {
         { name: 'Pocket Formula Summaries', labelAr: 'دفاتر القوانين الجيبية' },
       ]
     },
-    {
-      name: 'Books',
-      labelAr: 'كتب خارجية',
+    theme?.showNavBooks !== false && {
+      name: theme?.navBooksLabel || 'Books',
+      originalCat: 'Books',
+      labelAr: theme?.navBooksLabelAr || 'كتب خارجية',
       icon: <BookOpen size={18} className="text-sky-500" />,
       subCategories: [
-        { name: '3rd Secondary (Thanaweya Amma)', labelAr: 'الصف الثالث الثانوي (ثانوية عامة)' },
+        { name: '3rd Secondary (Thanaweya Amma)', labelAr: 'الصف الثالث الثانوي' },
         { name: '2nd Secondary', labelAr: 'الصف الثاني الثانوي' },
-        { name: '1st Secondary', labelAr: 'الصف الأول الثانوي' },
-        { name: 'French & Languages / Baccalaureate', labelAr: 'مدارس اللغات والبكالوريا' },
+        { name: '1st Secondary', labelAr: 'الصف الاول الثانوي' },
+        { name: 'French & Languages / Baccalaureate', labelAr: 'بكالوريا' },
       ]
     },
-    {
-      name: 'Teacher Codes',
-      labelAr: 'أكواد المنصات',
+    theme?.showNavCodes !== false && {
+      name: theme?.navCodesLabel || 'Teacher Codes',
+      originalCat: 'Teacher Codes',
+      labelAr: theme?.navCodesLabelAr || 'أكواد المنصات',
       icon: <KeyRound size={18} className="text-sky-500" />,
-      badge: 'فوري ⚡',
+      badge: theme?.navCodesBadge || 'فوري ⚡',
       subCategories: [
         { name: 'Physics / فيزياء', labelAr: 'فيزياء (مستر عبد المعبود وغيره)' },
         { name: 'Chemistry / كيمياء', labelAr: 'كيمياء (مستر خالد صقر)' },
@@ -73,7 +76,7 @@ export const Header = () => {
         { name: 'Math / رياضيات', labelAr: 'رياضيات بحتة وتطبيقية' },
       ]
     }
-  ];
+  ].filter(Boolean);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -135,27 +138,31 @@ export const Header = () => {
           </Link>
 
           {/* Desktop Search Bar */}
-          <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-1 max-w-md relative mx-2">
-            <input
-              type="text"
-              placeholder="ابحث عن كتاب، كشكول، أو كود مدرس (مثل المعاصر، عبد المعبود)..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-full border border-sky-200 bg-sky-50/50 text-sm focus:bg-white focus:border-sky-500 transition-all placeholder:text-slate-400"
-            />
-            <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 text-sky-500 hover:text-sky-700">
-              <Search size={18} />
-            </button>
-          </form>
+          {theme?.showSearchInHeader !== false && (
+            <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-1 max-w-md relative mx-2">
+              <input
+                type="text"
+                placeholder={theme?.searchPlaceholder || "ابحث عن كتاب، كشكول، أو كود مدرس (مثل المعاصر، عبد المعبود)..."}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 rounded-full border border-sky-200 bg-sky-50/50 text-sm focus:bg-white focus:border-sky-500 transition-all placeholder:text-slate-400"
+              />
+              <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 text-sky-500 hover:text-sky-700">
+                <Search size={18} />
+              </button>
+            </form>
+          )}
 
           {/* Desktop Navigation Links & Multi-level Menu */}
           <nav className="hidden lg:flex items-center gap-1">
-            <Link 
-              to="/" 
-              className="px-3 py-2 text-sm font-semibold text-slate-700 hover:text-sky-600 rounded-lg hover:bg-sky-50 transition-colors"
-            >
-              الرئيسية
-            </Link>
+            {theme?.showNavHome !== false && (
+              <Link 
+                to="/" 
+                className="px-3 py-2 text-sm font-semibold text-slate-700 hover:text-sky-600 rounded-lg hover:bg-sky-50 transition-colors"
+              >
+                {theme?.navHomeLabel || 'الرئيسية'}
+              </Link>
+            )}
 
             {categories.map((cat) => (
               <div key={cat.name} className="relative">
@@ -169,7 +176,7 @@ export const Header = () => {
                 >
                   {cat.icon}
                   <span>{cat.name}</span>
-                  <span className="text-xs text-slate-400 font-normal">({cat.labelAr})</span>
+                  {cat.labelAr && <span className="text-xs text-slate-400 font-normal">({cat.labelAr})</span>}
                   {cat.badge && (
                     <span className="bg-sky-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
                       {cat.badge}
@@ -184,7 +191,7 @@ export const Header = () => {
                     <div className="px-4 py-2 border-b border-slate-100 flex items-center justify-between">
                       <span className="text-xs font-bold uppercase text-sky-600">{cat.name} Categories</span>
                       <Link 
-                        to={`/products?category=${encodeURIComponent(cat.name)}`}
+                        to={`/products?category=${encodeURIComponent(cat.originalCat || cat.name)}`}
                         onClick={() => setActiveDropdown(null)}
                         className="text-xs text-sky-500 hover:underline"
                       >
@@ -195,7 +202,7 @@ export const Header = () => {
                       {cat.subCategories.map((sub) => (
                         <button
                           key={sub.name}
-                          onClick={() => handleSubCategoryClick(cat.name, sub.name)}
+                          onClick={() => handleSubCategoryClick(cat.originalCat || cat.name, sub.name)}
                           className="w-full text-right px-4 py-2.5 text-sm text-slate-700 hover:bg-sky-50 hover:text-sky-600 flex flex-col items-start transition-colors"
                         >
                           <span className="font-semibold text-slate-800">{sub.labelAr}</span>
@@ -208,12 +215,14 @@ export const Header = () => {
               </div>
             ))}
 
-            <Link 
-              to="/products" 
-              className="px-3 py-2 text-sm font-semibold text-slate-700 hover:text-sky-600 rounded-lg hover:bg-sky-50 transition-colors"
-            >
-              كل المنتجات
-            </Link>
+            {theme?.showNavAllProducts !== false && (
+              <Link 
+                to="/products" 
+                className="px-3 py-2 text-sm font-semibold text-slate-700 hover:text-sky-600 rounded-lg hover:bg-sky-50 transition-colors"
+              >
+                {theme?.navAllProductsLabel || 'كل المنتجات'}
+              </Link>
+            )}
           </nav>
 
           {/* User Auth & Cart Buttons */}
@@ -315,46 +324,59 @@ export const Header = () => {
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div className="lg:hidden border-t border-sky-100 py-4 px-2 bg-white animate-fade-in space-y-4">
-            <form onSubmit={handleSearchSubmit} className="relative">
-              <input
-                type="text"
-                placeholder="ابحث عن كتاب، كشكول، أو كود..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-xl border border-sky-200 bg-sky-50 text-sm"
-              />
-              <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 text-sky-500">
-                <Search size={18} />
-              </button>
-            </form>
+            {theme?.showSearchInHeader !== false && (
+              <form onSubmit={handleSearchSubmit} className="relative">
+                <input
+                  type="text"
+                  placeholder={theme?.searchPlaceholder || "ابحث عن كتاب، كشكول، أو كود..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-sky-200 bg-sky-50 text-sm"
+                />
+                <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 text-sky-500">
+                  <Search size={18} />
+                </button>
+              </form>
+            )}
 
             <div className="space-y-2">
-              <Link 
-                to="/" 
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 text-sm font-bold text-slate-800 rounded-lg hover:bg-sky-50"
-              >
-                الرئيسية
-              </Link>
-              <Link 
-                to="/products" 
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 text-sm font-bold text-slate-800 rounded-lg hover:bg-sky-50"
-              >
-                كل المنتجات
-              </Link>
+              {theme?.showNavHome !== false && (
+                <Link 
+                  to="/" 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-3 py-2 text-sm font-bold text-slate-800 rounded-lg hover:bg-sky-50"
+                >
+                  {theme?.navHomeLabel || 'الرئيسية'}
+                </Link>
+              )}
+              {theme?.showNavAllProducts !== false && (
+                <Link 
+                  to="/products" 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-3 py-2 text-sm font-bold text-slate-800 rounded-lg hover:bg-sky-50"
+                >
+                  {theme?.navAllProductsLabel || 'كل المنتجات'}
+                </Link>
+              )}
 
               {categories.map((cat) => (
                 <div key={cat.name} className="border-t border-slate-100 pt-2">
-                  <div className="px-3 py-1 font-bold text-sky-700 text-xs flex items-center gap-2">
-                    {cat.icon}
-                    <span>{cat.name} ({cat.labelAr})</span>
+                  <div className="px-3 py-1 font-bold text-sky-700 text-xs flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      {cat.icon}
+                      <span>{cat.name} {cat.labelAr && `(${cat.labelAr})`}</span>
+                    </div>
+                    {cat.badge && (
+                      <span className="bg-sky-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold">
+                        {cat.badge}
+                      </span>
+                    )}
                   </div>
                   <div className="pr-4 space-y-1 mt-1">
                     {cat.subCategories.map(sub => (
                       <button
                         key={sub.name}
-                        onClick={() => handleSubCategoryClick(cat.name, sub.name)}
+                        onClick={() => handleSubCategoryClick(cat.originalCat || cat.name, sub.name)}
                         className="w-full text-right px-3 py-1.5 text-xs text-slate-600 hover:text-sky-600 block"
                       >
                         • {sub.labelAr}

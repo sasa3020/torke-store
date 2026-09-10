@@ -18,7 +18,6 @@ export const DEFAULT_THEME = {
   showCategories: true,
   showBestSellers: true,
   showTeacherCodesBanner: true,
-  showReviews: false, // قسم آراء الطلاب معطل افتراضياً
   showFaq: true,
   showSocialPromo: true,
 
@@ -28,6 +27,24 @@ export const DEFAULT_THEME = {
   teacherCodesTitle: 'اشحن رصيد منصات كبار المدرسين في دقائق',
   teacherCodesBadge: 'أكواد المنصات التعليمية الرسمية',
   teacherCodesSubtitle: 'لا داعي للانتظار في السنتر أو مشاكل الدفع الإلكتروني. اختر المدرس، أتمم طلبك، واستلم كود التفعيل الفوري مع الدعم الفني.',
+
+  // Header & Navigation Bar Controls (شريط التنقل العلوي والقوائم)
+  navHomeLabel: 'الرئيسية',
+  showNavHome: true,
+  navNotebooksLabel: 'Notebooks',
+  navNotebooksLabelAr: 'كشاكيل وملخصات',
+  showNavNotebooks: true,
+  navBooksLabel: 'Books',
+  navBooksLabelAr: 'كتب خارجية',
+  showNavBooks: true,
+  navCodesLabel: 'Teacher Codes',
+  navCodesLabelAr: 'أكواد المنصات',
+  navCodesBadge: 'فوري ⚡',
+  showNavCodes: true,
+  navAllProductsLabel: 'كل المنتجات',
+  showNavAllProducts: true,
+  showSearchInHeader: true,
+  searchPlaceholder: 'ابحث عن كتاب، كشكول، أو كود مدرس (مثل المعاصر، عبد المعبود)...',
 
   // Typography & Aesthetics
   fontFamily: 'Cairo', // 'Cairo' | 'Alexandria' | 'Tajawal' | 'Almarai' | 'Readex Pro'
@@ -61,6 +78,7 @@ export const DEFAULT_THEME = {
 
   // Support & Social Media
   whatsappNumber: '+20 15 15856581',
+  whatsappOrdersNumber: '+201515856581', // رقم استقبال إشعارات الطلبات الجديدة
   socialPromoTitle: 'Follow us on social media—you might get a free gift with your package! 🌚',
   socialPromoSubtitle: 'تابعنا على صفحاتنا الرسمية وقناة الواتساب لتدخل السحب على هدايا مجانية وملازم حصرية مع كل أوردر!',
   facebookUrl: 'https://www.facebook.com/share/1GpZ82sdxr/',
@@ -171,9 +189,15 @@ export const StoreProvider = ({ children }) => {
   const [users, setUsers] = useState(() => {
     const saved = localStorage.getItem('torke_users');
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { console.error(e); }
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          // Purge demo user "عمر خالد المصري" or "user-demo-1"
+          return parsed.filter(u => u && u.id !== 'user-demo-1' && !u.fullName?.includes('عمر خالد'));
+        }
+      } catch (e) { console.error(e); }
     }
-    return [INITIAL_USER];
+    return [];
   });
 
   useEffect(() => {
@@ -183,9 +207,16 @@ export const StoreProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(() => {
     const saved = localStorage.getItem('torke_current_user');
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { console.error(e); }
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && (parsed.id === 'user-demo-1' || parsed.fullName?.includes('عمر خالد'))) {
+          localStorage.removeItem('torke_current_user');
+          return null;
+        }
+        return parsed;
+      } catch (e) { console.error(e); }
     }
-    return INITIAL_USER; // Default to realistic student demo so checkout is ready to test immediately
+    return null;
   });
 
   useEffect(() => {
@@ -198,8 +229,19 @@ export const StoreProvider = ({ children }) => {
 
   const registerUser = (userData) => {
     // userData: { fullName, primaryPhone, altPhone, address, grade, password, email }
+    const phone = userData.primaryPhone?.trim();
+    if (!phone) {
+      return { success: false, message: 'يرجى إدخال رقم هاتف أساسي صحيح' };
+    }
+
+    const phoneExists = users.some(u => u.primaryPhone && u.primaryPhone.trim() === phone);
+    if (phoneExists) {
+      return { success: false, message: 'رقم الهاتف مسجل مسبقاً! يمكنك تسجيل الدخول به مباشرة.' };
+    }
+
     const newUser = {
       ...userData,
+      primaryPhone: phone,
       id: `user-${Date.now()}`,
       registeredAt: new Date().toISOString()
     };
@@ -210,27 +252,27 @@ export const StoreProvider = ({ children }) => {
   };
 
   const loginUser = (phoneOrEmail, password) => {
+    const cleanId = (phoneOrEmail || '').trim();
+    const cleanPass = (password || '').trim();
+
+    if (!cleanId || !cleanPass) {
+      return { success: false, message: 'يرجى إدخال رقم الهاتف / البريد الإلكتروني وكلمة المرور' };
+    }
+
     const found = users.find(u =>
-      (u.primaryPhone === phoneOrEmail || u.email === phoneOrEmail) &&
-      (!u.password || u.password === password || password === 'student123')
+      (u.primaryPhone === cleanId || (u.email && u.email.toLowerCase() === cleanId.toLowerCase())) &&
+      u.password === cleanPass
     );
+
     if (found) {
       setCurrentUser(found);
       return { success: true, user: found };
     }
-    // Fallback allowing quick demo login
-    const demoUser = {
-      id: `user-${Date.now()}`,
-      fullName: phoneOrEmail.includes('@') ? phoneOrEmail.split('@')[0] : 'طالب الثانوية',
-      primaryPhone: phoneOrEmail,
-      altPhone: '01122334455',
-      address: 'القاهرة - مصر',
-      grade: '3rd Secondary',
-      registeredAt: new Date().toISOString()
+
+    return { 
+      success: false, 
+      message: 'رقم الهاتف أو كلمة المرور غير صحيحة! يرجى التحقق من البيانات أو إنشاء حساب جديد.' 
     };
-    setCurrentUser(demoUser);
-    setUsers(prev => [...prev, demoUser]);
-    return { success: true, user: demoUser };
   };
 
   const logoutUser = () => {
@@ -248,47 +290,15 @@ export const StoreProvider = ({ children }) => {
   const [orders, setOrders] = useState(() => {
     const saved = localStorage.getItem('torke_orders');
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { console.error(e); }
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          // Filter out orders associated with the old demo user "عمر خالد المصري"
+          return parsed.filter(o => !o.customer?.fullName?.includes('عمر خالد'));
+        }
+      } catch (e) { console.error(e); }
     }
-    // Realistic initial sample order for demonstration in admin
-    return [
-      {
-        id: 'TRK-89241',
-        createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-        customer: {
-          fullName: 'عمر خالد المصري',
-          primaryPhone: '01012345678',
-          altPhone: '01198765432',
-          address: 'عمارة 14، شارع جامعة القاهرة، حي الدقي، محافظة الجيزة - شقة 5',
-          grade: '3rd Secondary',
-          notes: 'يرجى الاتصال قبل الوصول بنصف ساعة'
-        },
-        items: [
-          {
-            id: 'prod-b1',
-            title: 'كتاب المعاصر رياضيات بحتة - تالتة ثانوي (شرح وبنك أسئلة)',
-            price: 285,
-            quantity: 1,
-            image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=300&q=80'
-          },
-          {
-            id: 'prod-n1',
-            title: 'كشكول تورك الذكي المقسم سلك 200 صفحة (مقاوم للماء والتمزق)',
-            price: 85,
-            quantity: 2,
-            image: 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=300&q=80'
-          }
-        ],
-        shippingMethod: 'Standard Shipping',
-        shippingCost: 85,
-        subtotal: 455,
-        grandTotal: 540,
-        paymentMethod: 'Vodafone Cash',
-        vodafoneTransferNumber: '01031361897',
-        receiptImage: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80',
-        status: 'Paid / Confirmed' // 'Pending Review' | 'Paid / Confirmed' | 'Shipped' | 'Delivered' | 'Cancelled'
-      }
-    ];
+    return [];
   });
 
   useEffect(() => {
@@ -311,7 +321,7 @@ export const StoreProvider = ({ children }) => {
       paymentMethod: 'Vodafone Cash',
       vodafoneTransferNumber: '01031361897',
       receiptImage: receiptImage || null,
-      status: 'Pending Review'
+      status: 'Preparing'
     };
 
     setOrders(prev => [newOrder, ...prev]);

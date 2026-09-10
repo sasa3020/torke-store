@@ -12,27 +12,179 @@ import {
   Truck, 
   ArrowRight,
   TrendingUp,
-  Star
+  Star,
+  Search,
+  Package,
+  PackageCheck,
+  Clock
 } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import { ProductCard } from '../components/ProductCard';
 import { FAQSection } from '../components/FAQSection';
+
+// Order status config (mirrors AdminOrders)
+const ORDER_STATUSES = [
+  { id: 'Preparing',  label: 'قيد التحضير',  emoji: '⏳', color: 'text-amber-500',  bg: 'bg-amber-500/10 border-amber-500/30'   },
+  { id: 'Ready',      label: 'تم التحضير',   emoji: '📦', color: 'text-sky-400',    bg: 'bg-sky-500/10 border-sky-500/30'     },
+  { id: 'Shipped',    label: 'تم الشحن',      emoji: '🚚', color: 'text-blue-400',   bg: 'bg-blue-500/10 border-blue-500/30'    },
+  { id: 'Delivered',  label: 'تم التسليم',   emoji: '✅', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/30' },
+  { id: 'Cancelled',  label: 'ملغي',          emoji: '✖️',  color: 'text-rose-400',   bg: 'bg-rose-500/10 border-rose-500/30'    },
+];
+
+const OrderTracker = () => {
+  const { orders } = useStore();
+  const [trackId, setTrackId] = useState('');
+  const [result, setResult] = useState(null);
+  const [notFound, setNotFound] = useState(false);
+
+  const handleTrack = (e) => {
+    e.preventDefault();
+    const id = trackId.trim().toUpperCase();
+    const found = orders.find(o => o.id.toUpperCase() === id);
+    if (found) {
+      setResult(found);
+      setNotFound(false);
+    } else {
+      setResult(null);
+      setNotFound(true);
+    }
+  };
+
+  const statusInfo = result ? ORDER_STATUSES.find(s => s.id === result.status) : null;
+  const statusIndex = statusInfo ? ORDER_STATUSES.findIndex(s => s.id === result?.status) : -1;
+
+  return (
+    <section id="track-order" className="py-16 bg-gradient-to-b from-slate-900 to-slate-950">
+      <div className="container max-w-2xl">
+        <div className="text-center space-y-3 mb-10">
+          <div className="inline-flex items-center gap-2 bg-sky-500/10 text-sky-400 px-3.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide border border-sky-500/20">
+            <Package size={15} />
+            <span>تتبع طلبك فوراً</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-white">
+            اعرف حالة طلبك لحظة بلحظة
+          </h2>
+          <p className="text-slate-400 text-sm">
+            ادخل كود الأوردر المكون من حروف TRK وأرقام الموجود في رسالة تأكيد طلبك
+          </p>
+        </div>
+
+        {/* Search Box */}
+        <form onSubmit={handleTrack} className="flex gap-3">
+          <input
+            type="text"
+            value={trackId}
+            onChange={(e) => setTrackId(e.target.value)}
+            placeholder="مثال: TRK-12345"
+            className="flex-1 px-5 py-3.5 rounded-2xl bg-white/10 backdrop-blur border border-white/20 text-white placeholder-white/40 text-base focus:outline-none focus:border-sky-400 transition-all"
+            dir="ltr"
+          />
+          <button
+            type="submit"
+            className="px-6 py-3.5 bg-sky-500 hover:bg-sky-400 text-white font-black rounded-2xl flex items-center gap-2 transition-all shadow-lg shadow-sky-500/25 hover:scale-105"
+          >
+            <Search size={18} />
+            <span>تتبع</span>
+          </button>
+        </form>
+
+        {/* Not Found */}
+        {notFound && (
+          <div className="mt-6 p-5 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-center">
+            <p className="text-rose-300 font-bold">❌ لم يتم العثور على طلب بهذا الكود</p>
+            <p className="text-slate-400 text-xs mt-1">تأكد من كتابة الكود بشكل صحيح مثل: TRK-12345</p>
+          </div>
+        )}
+
+        {/* Result */}
+        {result && statusInfo && (
+          <div className="mt-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-6 space-y-5 animate-fade-in">
+            {/* Order ID + Date */}
+            <div className="flex items-center justify-between">
+              <span className="font-mono font-black text-sky-400 text-lg">{result.id}</span>
+              <span className="text-xs text-slate-400">{new Date(result.createdAt).toLocaleDateString('ar-EG')}</span>
+            </div>
+
+            {/* Status Card */}
+            <div className={`p-4 rounded-2xl border ${statusInfo.bg} text-center`}>
+              <div className="text-4xl mb-2">{statusInfo.emoji}</div>
+              <div className={`text-xl font-black ${statusInfo.color}`}>{statusInfo.label}</div>
+              <div className="text-slate-400 text-xs mt-1">حالة طلبك الحالية</div>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="space-y-2">
+              <div className="flex justify-between text-[10px] text-slate-400 font-bold">
+                {ORDER_STATUSES.filter(s => s.id !== 'Cancelled').map((s, i) => (
+                  <span key={s.id} className={i <= statusIndex && result.status !== 'Cancelled' ? statusInfo.color : 'text-slate-600'}>
+                    {s.emoji}
+                  </span>
+                ))}
+              </div>
+              <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-sky-500 to-emerald-400 rounded-full transition-all duration-700"
+                  style={{ 
+                    width: result.status === 'Cancelled' ? '100%' : 
+                           `${Math.min(100, ((statusIndex) / 3) * 100)}%`,
+                    background: result.status === 'Cancelled' ? '#ef4444' : undefined
+                  }}
+                />
+              </div>
+              <div className="flex justify-between text-[9px] text-slate-500">
+                <span>قيد التحضير</span>
+                <span>تم التحضير</span>
+                <span>تم الشحن</span>
+                <span>تم التسليم</span>
+              </div>
+            </div>
+
+            {/* Summary */}
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="bg-slate-800/60 p-3 rounded-xl">
+                <span className="text-slate-400 block">اسم العميل</span>
+                <strong className="text-white">{result.customer.fullName}</strong>
+              </div>
+              <div className="bg-slate-800/60 p-3 rounded-xl">
+                <span className="text-slate-400 block">الإجمالي</span>
+                <strong className="text-white">{result.grandTotal} ج.م</strong>
+              </div>
+              <div className="bg-slate-800/60 p-3 rounded-xl col-span-2">
+                <span className="text-slate-400 block">طريقة الشحن</span>
+                <strong className="text-white">{result.shippingMethod}</strong>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
 
 export const HomePage = () => {
   const { products, theme } = useStore();
   const [selectedGrade, setSelectedGrade] = useState('All');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
+  const normalizeGrade = (g) => {
+    if (!g) return '';
+    if (g.includes('3rd') || g.includes('الثالث') || g.includes('ثانوية عامة')) return '3rd';
+    if (g.includes('2nd') || g.includes('الثاني') || g.includes('تانية')) return '2nd';
+    if (g.includes('1st') || g.includes('الأول') || g.includes('الاول') || g.includes('أولى')) return '1st';
+    if (g.includes('Baccalaureate') || g.includes('بكالوريا')) return 'bac';
+    return g;
+  };
+
   const grades = [
-    { id: 'All', label: 'جميع المراحل (All)' },
-    { id: '3rd Secondary', label: 'ثانوية عامة (3rd Sec)' },
-    { id: '2nd Secondary', label: 'تانية ثانوي (2nd Sec)' },
-    { id: '1st Secondary', label: 'أولى ثانوي (1st Sec)' },
-    { id: 'Baccalaureate', label: 'بكالوريا (Baccalaureate)' },
+    { id: 'All', label: 'جميع الصفوف' },
+    { id: '3rd Secondary', label: 'الصف الثالث الثانوي' },
+    { id: '2nd Secondary', label: 'الصف الثاني الثانوي' },
+    { id: '1st Secondary', label: 'الصف الاول الثانوي' },
+    { id: 'Baccalaureate', label: 'بكالوريا' },
   ];
 
   const filteredProducts = products.filter(item => {
-    const matchesGrade = selectedGrade === 'All' || item.grade === selectedGrade || item.grade === 'All Grades';
+    const matchesGrade = selectedGrade === 'All' || item.grade === 'All Grades' || normalizeGrade(item.grade) === normalizeGrade(selectedGrade);
     const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
     return matchesGrade && matchesCategory;
   });
@@ -311,6 +463,9 @@ export const HomePage = () => {
           </div>
         </section>
       )}
+
+      {/* Order Tracking Section */}
+      <OrderTracker />
 
       {/* Interactive FAQ Section */}
       {theme?.showFaq !== false && (

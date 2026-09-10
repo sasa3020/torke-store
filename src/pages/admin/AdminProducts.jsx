@@ -10,7 +10,8 @@ import {
   KeyRound, 
   BookOpen, 
   FileText,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Upload
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 
@@ -81,6 +82,25 @@ export const AdminProducts = () => {
     });
     setEditingProductId(product.id);
     setModalMode('edit');
+  };
+
+  const handleImageFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 8 * 1024 * 1024) {
+      alert('حجم الصورة كبير جداً، يرجى اختيار صورة أقل من 8 ميجابايت');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setFormData(prev => ({
+        ...prev,
+        image: event.target.result
+      }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = (e) => {
@@ -323,11 +343,11 @@ export const AdminProducts = () => {
                     onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white cursor-pointer"
                   >
-                    <option value="3rd Secondary">الصف الثالث الثانوي (ثانوية عامة)</option>
+                    <option value="3rd Secondary">الصف الثالث الثانوي</option>
                     <option value="2nd Secondary">الصف الثاني الثانوي</option>
-                    <option value="1st Secondary">الصف الأول الثانوي</option>
-                    <option value="Baccalaureate">البكالوريا الدولية / لغات</option>
-                    <option value="All Grades">جميع المراحل (All)</option>
+                    <option value="1st Secondary">الصف الاول الثانوي</option>
+                    <option value="Baccalaureate">بكالوريا</option>
+                    <option value="All Grades">جميع الصفوف (عام)</option>
                   </select>
                 </div>
               </div>
@@ -409,16 +429,73 @@ export const AdminProducts = () => {
                 </div>
               </div>
 
-              {/* Image URL */}
-              <div>
-                <label className="block text-slate-300 font-bold mb-1">رابط صورة المنتج (Image URL) *</label>
-                <input
-                  type="url"
-                  required
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                />
+              {/* Image Upload & Preview */}
+              <div className="space-y-2">
+                <label className="block text-slate-300 font-bold">صورة المنتج * (رفع من الجهاز)</label>
+                
+                {formData.image ? (
+                  <div className="relative group w-full h-44 rounded-2xl overflow-hidden border border-slate-700 bg-slate-950 flex items-center justify-center">
+                    <img 
+                      src={formData.image} 
+                      alt="معاينة صورة المنتج" 
+                      className="w-full h-full object-contain p-2"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = 'https://placehold.co/400x400/1e293b/94a3b8?text=Image+Error';
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                      <label className="cursor-pointer px-3 py-2 bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-lg">
+                        <Upload size={15} />
+                        <span>تغيير الصورة</span>
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          onChange={handleImageFileChange} 
+                          className="hidden" 
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, image: '' })}
+                        className="px-3 py-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-lg"
+                      >
+                        <Trash2 size={15} />
+                        <span>إزالة</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <label className="border-2 border-dashed border-slate-700 hover:border-sky-500 bg-slate-800/40 hover:bg-slate-800/80 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all">
+                    <div className="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-400 flex items-center justify-center mb-2">
+                      <Upload size={24} />
+                    </div>
+                    <span className="text-sm font-bold text-white mb-1">اضغط هنا لرفع صورة المنتج من جهازك</span>
+                    <span className="text-xs text-slate-400">PNG, JPG, WebP أو أي صيغة صور</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleImageFileChange} 
+                      className="hidden" 
+                    />
+                  </label>
+                )}
+
+                {/* Optional URL input as alternative */}
+                <div className="pt-1">
+                  <input
+                    type="text"
+                    placeholder="أو اكتب رابط الصورة (URL) هنا إن أردت..."
+                    value={formData.image.startsWith('data:') ? 'تم رفع صورة من الجهاز بنجاح ✅' : formData.image}
+                    onChange={(e) => {
+                      if (!formData.image.startsWith('data:')) {
+                        setFormData({ ...formData, image: e.target.value });
+                      }
+                    }}
+                    readOnly={formData.image.startsWith('data:')}
+                    className={`w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs text-slate-300 ${formData.image.startsWith('data:') ? 'text-emerald-400 font-bold bg-emerald-950/20 border-emerald-800/40' : ''}`}
+                  />
+                </div>
               </div>
 
               {/* Description */}

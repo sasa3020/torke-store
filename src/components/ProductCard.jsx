@@ -43,9 +43,9 @@ export const ProductCard = ({ product }) => {
           loading="lazy"
         />
         {product.category === 'Teacher Codes' && (
-          <div className="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur-sm text-sky-300 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
+          <div className="absolute bottom-2 left-2 bg-slate-900/85 backdrop-blur-sm text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 border border-emerald-500/30">
             <Zap size={11} className="text-amber-400" />
-            <span>كود منصة فوري</span>
+            <span>كود منصة فوري (بدون شحن ⚡)</span>
           </div>
         )}
       </Link>

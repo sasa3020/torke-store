@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Palette,
   Type,
@@ -22,7 +22,9 @@ import {
   Tag,
   ToggleLeft,
   ToggleRight,
-  Link2
+  Link2,
+  Menu,
+  Search
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useStore, DEFAULT_THEME } from '../../context/StoreContext';
@@ -108,12 +110,28 @@ export const AdminTheme = () => {
     setOpenSections(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  // Generic live-update helper
-  const update = (field, value) => {
+  const debounceRef = useRef(null);
+
+  // Generic live-update helper with debouncing for text inputs to ensure 100% fluid typing
+  const update = (field, value, immediate = false) => {
     const updated = { ...formTheme, [field]: value };
     setFormTheme(updated);
-    updateTheme(updated);
+    if (immediate) {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      updateTheme(updated);
+    } else {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(() => {
+        updateTheme(updated);
+      }, 350);
+    }
   };
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -333,6 +351,165 @@ export const AdminTheme = () => {
               </Field>
               <Field label="نص الشعار (الجزء المميز):">
                 <TextInput value={formTheme.logoHighlight} onChange={(e) => update('logoHighlight', e.target.value)} dir="ltr" placeholder="Store" />
+              </Field>
+            </div>
+          </Section>
+
+          {/* ═══════════════════════════════════════════════════════════
+              3. HEADER & NAVIGATION BAR (شريط التنقل العلوي والقوائم)
+          ═══════════════════════════════════════════════════════════ */}
+          <Section
+            id="header_nav"
+            icon={<Menu size={18} />}
+            color="bg-cyan-600"
+            title="3. شريط التنقل العلوي والقوائم (Header & Navigation)"
+            subtitle="تعديل نصوص القوائم، الكشاكيل، الكتب، أكواد المنصات، والبحث"
+            isOpen={openSections.header_nav}
+            onToggle={handleToggleSection}
+          >
+            {/* Search Bar Toggle */}
+            <div className="flex items-center justify-between p-3.5 bg-slate-800 rounded-2xl border border-slate-700">
+              <div>
+                <p className="text-xs font-bold text-white">شريط البحث في الهيدر</p>
+                <p className="text-[11px] text-slate-400">إظهار أو إخفاء حقل البحث السريع للطلاب في القائمة العلوية</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => update('showSearchInHeader', formTheme.showSearchInHeader === false ? true : false)}
+                className={`flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-xl transition-all ${
+                  formTheme.showSearchInHeader !== false
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                    : 'bg-slate-700 text-slate-400 border border-slate-600'
+                }`}
+              >
+                {formTheme.showSearchInHeader !== false ? (
+                  <><ToggleRight size={18} /><span>مفعّل</span></>
+                ) : (
+                  <><ToggleLeft size={18} /><span>معطّل</span></>
+                )}
+              </button>
+            </div>
+
+            <Field label="نص توجيه البحث (Search Placeholder):">
+              <TextInput 
+                value={formTheme.searchPlaceholder} 
+                onChange={(e) => update('searchPlaceholder', e.target.value)} 
+                placeholder="ابحث عن كتاب، كشكول، أو كود مدرس (مثل المعاصر، عبد المعبود)..." 
+              />
+            </Field>
+
+            {/* Nav Home Link */}
+            <div className="p-3.5 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-white">رابط الصفحة الرئيسية</span>
+                <button
+                  type="button"
+                  onClick={() => update('showNavHome', formTheme.showNavHome === false ? true : false)}
+                  className={`flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-lg transition-all ${
+                    formTheme.showNavHome !== false ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'
+                  }`}
+                >
+                  {formTheme.showNavHome !== false ? 'ظاهر' : 'مخفي'}
+                </button>
+              </div>
+              <Field label="نص زر الرئيسية:">
+                <TextInput value={formTheme.navHomeLabel} onChange={(e) => update('navHomeLabel', e.target.value)} placeholder="الرئيسية" />
+              </Field>
+            </div>
+
+            {/* Nav Notebooks */}
+            <div className="p-3.5 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-white">قسم الكشاكيل والملخصات (Notebooks)</span>
+                <button
+                  type="button"
+                  onClick={() => update('showNavNotebooks', formTheme.showNavNotebooks === false ? true : false)}
+                  className={`flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-lg transition-all ${
+                    formTheme.showNavNotebooks !== false ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'
+                  }`}
+                >
+                  {formTheme.showNavNotebooks !== false ? 'ظاهر' : 'مخفي'}
+                </button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Field label="الاسم بالإنجليزية (أو الرئيسي):">
+                  <TextInput value={formTheme.navNotebooksLabel} onChange={(e) => update('navNotebooksLabel', e.target.value)} placeholder="Notebooks" dir="ltr" />
+                </Field>
+                <Field label="التسمية التوضيحية بالعربية:">
+                  <TextInput value={formTheme.navNotebooksLabelAr} onChange={(e) => update('navNotebooksLabelAr', e.target.value)} placeholder="كشاكيل وملخصات" />
+                </Field>
+              </div>
+            </div>
+
+            {/* Nav Books */}
+            <div className="p-3.5 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-white">قسم الكتب الخارجية (Books)</span>
+                <button
+                  type="button"
+                  onClick={() => update('showNavBooks', formTheme.showNavBooks === false ? true : false)}
+                  className={`flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-lg transition-all ${
+                    formTheme.showNavBooks !== false ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'
+                  }`}
+                >
+                  {formTheme.showNavBooks !== false ? 'ظاهر' : 'مخفي'}
+                </button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Field label="الاسم بالإنجليزية (أو الرئيسي):">
+                  <TextInput value={formTheme.navBooksLabel} onChange={(e) => update('navBooksLabel', e.target.value)} placeholder="Books" dir="ltr" />
+                </Field>
+                <Field label="التسمية التوضيحية بالعربية:">
+                  <TextInput value={formTheme.navBooksLabelAr} onChange={(e) => update('navBooksLabelAr', e.target.value)} placeholder="كتب خارجية" />
+                </Field>
+              </div>
+            </div>
+
+            {/* Nav Teacher Codes */}
+            <div className="p-3.5 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-white">قسم أكواد المنصات والمدرسين (Teacher Codes)</span>
+                <button
+                  type="button"
+                  onClick={() => update('showNavCodes', formTheme.showNavCodes === false ? true : false)}
+                  className={`flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-lg transition-all ${
+                    formTheme.showNavCodes !== false ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'
+                  }`}
+                >
+                  {formTheme.showNavCodes !== false ? 'ظاهر' : 'مخفي'}
+                </button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Field label="الاسم بالإنجليزية:">
+                  <TextInput value={formTheme.navCodesLabel} onChange={(e) => update('navCodesLabel', e.target.value)} placeholder="Teacher Codes" dir="ltr" />
+                </Field>
+                <Field label="التسمية التوضيحية بالعربية:">
+                  <TextInput value={formTheme.navCodesLabelAr} onChange={(e) => update('navCodesLabelAr', e.target.value)} placeholder="أكواد المنصات" />
+                </Field>
+                <div className="sm:col-span-2">
+                  <Field label="نص الشارة المميزة (Badge):" hint="النص في الشارة الملونة بجانب اسم القسم (مثل فوري ⚡)">
+                    <TextInput value={formTheme.navCodesBadge} onChange={(e) => update('navCodesBadge', e.target.value)} placeholder="فوري ⚡" />
+                  </Field>
+                </div>
+              </div>
+            </div>
+
+            {/* Nav All Products */}
+            <div className="p-3.5 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-white">رابط كل المنتجات</span>
+                <button
+                  type="button"
+                  onClick={() => update('showNavAllProducts', formTheme.showNavAllProducts === false ? true : false)}
+                  className={`flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-lg transition-all ${
+                    formTheme.showNavAllProducts !== false ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'
+                  }`}
+                >
+                  {formTheme.showNavAllProducts !== false ? 'ظاهر' : 'مخفي'}
+                </button>
+              </div>
+              <Field label="نص الرابط:">
+                <TextInput value={formTheme.navAllProductsLabel} onChange={(e) => update('navAllProductsLabel', e.target.value)} placeholder="كل المنتجات" />
               </Field>
             </div>
           </Section>
@@ -662,24 +839,56 @@ export const AdminTheme = () => {
 
             <div className="p-5 space-y-4">
               {/* Header Simulation */}
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <div
-                    className="w-8 h-8 text-white flex items-center justify-center font-bold text-sm shadow-sm"
-                    style={{ backgroundColor: formTheme.primaryColor, borderRadius: '8px' }}
-                  >
-                    {(formTheme.logoText || 'T').charAt(0)}
+              <div className="pb-3 border-b border-slate-100 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-8 h-8 text-white flex items-center justify-center font-bold text-sm shadow-sm"
+                      style={{ backgroundColor: formTheme.primaryColor, borderRadius: '8px' }}
+                    >
+                      {(formTheme.logoText || 'T').charAt(0)}
+                    </div>
+                    <div>
+                      <h3 className="font-extrabold text-sm text-slate-900 leading-none">
+                        <span>{formTheme.logoText}</span>
+                        <span className="ml-1" style={{ color: formTheme.primaryColor }}>{formTheme.logoHighlight}</span>
+                      </h3>
+                      <span className="text-[10px] text-slate-400">{formTheme.storeNameAr}</span>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-extrabold text-sm text-slate-900 leading-none">
-                      <span>{formTheme.logoText}</span>
-                      <span className="ml-1" style={{ color: formTheme.primaryColor }}>{formTheme.logoHighlight}</span>
-                    </h3>
-                    <span className="text-[10px] text-slate-400">{formTheme.storeNameAr}</span>
+                  <div className="p-2 rounded-full bg-slate-100">
+                    <ShoppingBag size={14} className="text-slate-700" />
                   </div>
                 </div>
-                <div className="p-2 rounded-full bg-slate-100">
-                  <ShoppingBag size={14} className="text-slate-700" />
+
+                {/* Simulated Navbar Links */}
+                <div className="flex items-center gap-1 overflow-x-auto text-[10px] font-bold text-slate-600 pt-1 pb-0.5">
+                  {formTheme.showNavHome !== false && (
+                    <span className="px-2 py-0.5 bg-sky-50 text-sky-700 rounded-md whitespace-nowrap">
+                      {formTheme.navHomeLabel || 'الرئيسية'}
+                    </span>
+                  )}
+                  {formTheme.showNavNotebooks !== false && (
+                    <span className="px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md whitespace-nowrap">
+                      {formTheme.navNotebooksLabel || 'Notebooks'}
+                    </span>
+                  )}
+                  {formTheme.showNavBooks !== false && (
+                    <span className="px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md whitespace-nowrap">
+                      {formTheme.navBooksLabel || 'Books'}
+                    </span>
+                  )}
+                  {formTheme.showNavCodes !== false && (
+                    <span className="px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md whitespace-nowrap flex items-center gap-1">
+                      <span>{formTheme.navCodesLabel || 'Teacher Codes'}</span>
+                      <span className="bg-sky-500 text-white text-[8px] px-1 rounded-full font-bold">{formTheme.navCodesBadge || 'فوري ⚡'}</span>
+                    </span>
+                  )}
+                  {formTheme.showNavAllProducts !== false && (
+                    <span className="px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md whitespace-nowrap">
+                      {formTheme.navAllProductsLabel || 'كل المنتجات'}
+                    </span>
+                  )}
                 </div>
               </div>
 

@@ -17,7 +17,7 @@ export const AuthModal = () => {
     primaryPhone: '',
     altPhone: '',
     address: '',
-    grade: '3rd Secondary',
+    grade: 'الصف الثالث الثانوي',
     password: '',
     email: ''
   });
@@ -62,6 +62,8 @@ export const AuthModal = () => {
         setIsAuthModalOpen(false);
         setSuccessMsg('');
       }, 1000);
+    } else {
+      setErrorMsg(result.message || 'تعذر إنشاء الحساب');
     }
   };
 
@@ -81,20 +83,9 @@ export const AuthModal = () => {
         setIsAuthModalOpen(false);
         setSuccessMsg('');
       }, 800);
+    } else {
+      setErrorMsg(result.message || 'بيانات الدخول غير صحيحة');
     }
-  };
-
-  // Demo auto-fill helper
-  const fillDemoStudent = () => {
-    setFormData({
-      fullName: 'عمر خالد المصري',
-      primaryPhone: '01012345678',
-      altPhone: '01198765432',
-      address: 'الدقي - 14 شارع جامعة القاهرة - الجيزة',
-      grade: '3rd Secondary',
-      password: 'student123',
-      email: 'omar@torke.store'
-    });
   };
 
   return (
@@ -175,7 +166,7 @@ export const AuthModal = () => {
                   <input
                     type="text"
                     required
-                    placeholder="مثال: عمر خالد أحمد المصري"
+                    placeholder="مثال: أحمد محمد علي"
                     value={formData.fullName}
                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm pl-10"
@@ -250,10 +241,10 @@ export const AuthModal = () => {
                     onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white pl-10"
                   >
-                    <option value="3rd Secondary">الصف الثالث الثانوي (ثانوية عامة - 3rd Sec)</option>
-                    <option value="2nd Secondary">الصف الثاني الثانوي (2nd Sec)</option>
-                    <option value="1st Secondary">الصف الأول الثانوي (1st Sec)</option>
-                    <option value="Baccalaureate">البكالوريا الدولية / الفرنسية (Baccalaureate)</option>
+                    <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                    <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                    <option value="الصف الاول الثانوي">الصف الاول الثانوي</option>
+                    <option value="بكالوريا">بكالوريا</option>
                   </select>
                   <GraduationCap size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 </div>
@@ -334,16 +325,17 @@ export const AuthModal = () => {
                 <span>دخول إلى حسابي</span>
               </button>
 
-              <div className="p-3 bg-sky-50 rounded-xl text-center">
+              <div className="p-3 bg-slate-50 rounded-xl text-center">
+                <span className="text-xs text-slate-500 ml-1">طالب جديد في متجر تورك؟</span>
                 <button
                   type="button"
                   onClick={() => {
-                    setLoginIdentifier('01012345678');
-                    setLoginPassword('student123');
+                    setAuthModalMode('register');
+                    setErrorMsg('');
                   }}
-                  className="text-xs text-sky-700 font-bold hover:underline"
+                  className="text-xs text-sky-600 font-bold hover:underline"
                 >
-                  ⚡ دخول سريع بحساب الطالب التجريبي (عمر خالد)
+                  إنشاء حساب طالب الآن
                 </button>
               </div>
             </form>

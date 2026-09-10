@@ -129,7 +129,9 @@ export const CartDrawer = () => {
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 text-center">
-                * مصاريف الشحن ورقم فودافون كاش للتأكيد يتم احتسابها في خطوة إتمام الطلب.
+                {cart.length > 0 && cart.every(i => i.category === 'Teacher Codes')
+                  ? '⚡ أكواد المنصات والدروس تسليم فوري عبر واتساب بدون خدمة شحن (0 ج.م).'
+                  : '* مصاريف الشحن ورقم فودافون كاش للتأكيد يتم احتسابها في خطوة إتمام الطلب.'}
               </p>
               <button
                 onClick={handleCheckoutClick}

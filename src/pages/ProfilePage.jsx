@@ -18,13 +18,22 @@ import { useStore } from '../context/StoreContext';
 export const ProfilePage = () => {
   const { currentUser, updateProfile, orders, openLoginModal } = useStore();
 
+  const formatGradeName = (g) => {
+    if (!g) return 'الصف الثالث الثانوي';
+    if (g.includes('3rd') || g.includes('الثالث')) return 'الصف الثالث الثانوي';
+    if (g.includes('2nd') || g.includes('الثاني')) return 'الصف الثاني الثانوي';
+    if (g.includes('1st') || g.includes('الاول') || g.includes('الأول')) return 'الصف الاول الثانوي';
+    if (g.includes('Baccalaureate') || g.includes('بكالوريا')) return 'بكالوريا';
+    return g;
+  };
+
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     fullName: currentUser?.fullName || '',
     primaryPhone: currentUser?.primaryPhone || '',
     altPhone: currentUser?.altPhone || '',
     address: currentUser?.address || '',
-    grade: currentUser?.grade || '3rd Secondary'
+    grade: currentUser?.grade ? formatGradeName(currentUser.grade) : 'الصف الثالث الثانوي'
   });
 
   const [saveToast, setSaveToast] = useState(false);
@@ -162,10 +171,10 @@ export const ProfilePage = () => {
                   onChange={(e) => setEditForm({ ...editForm, grade: e.target.value })}
                   className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white"
                 >
-                  <option value="3rd Secondary">الصف الثالث الثانوي (ثانوية عامة)</option>
-                  <option value="2nd Secondary">الصف الثاني الثانوي</option>
-                  <option value="1st Secondary">الصف الأول الثانوي</option>
-                  <option value="Baccalaureate">البكالوريا الدولية / لغات</option>
+                  <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                  <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                  <option value="الصف الاول الثانوي">الصف الاول الثانوي</option>
+                  <option value="بكالوريا">بكالوريا</option>
                 </select>
               </div>
 
@@ -187,7 +196,7 @@ export const ProfilePage = () => {
                 <GraduationCap size={16} className="text-sky-600 flex-shrink-0" />
                 <div>
                   <span className="text-[10px] text-slate-400 block">المرحلة الدراسية:</span>
-                  <span className="font-bold text-slate-900">{currentUser.grade || 'ثانوية عامة'}</span>
+                  <span className="font-bold text-slate-900">{formatGradeName(currentUser.grade)}</span>
                 </div>
               </div>
 

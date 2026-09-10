@@ -15,6 +15,8 @@ import { AdminOrders } from './pages/admin/AdminOrders';
 import { AdminProducts } from './pages/admin/AdminProducts';
 import { AdminTeam } from './pages/admin/AdminTeam';
 import { AdminTheme } from './pages/admin/AdminTheme';
+import { AdminPages } from './pages/admin/AdminPages';
+import { CustomPageView } from './pages/CustomPageView';
 
 // Customer layout wrapper
 const CustomerLayout = ({ children }) => {
@@ -87,12 +89,29 @@ export function App() {
             </CustomerLayout>
           }
         />
+        <Route
+          path="/page/:slug"
+          element={
+            <CustomerLayout>
+              <CustomPageView />
+            </CustomerLayout>
+          }
+        />
+        <Route
+          path="/p/:slug"
+          element={
+            <CustomerLayout>
+              <CustomPageView />
+            </CustomerLayout>
+          }
+        />
 
         {/* Isolated Admin Dashboard Routes */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="products" element={<AdminProducts />} />
+          <Route path="pages" element={<AdminPages />} />
           <Route path="team" element={<AdminTeam />} />
           <Route path="theme" element={<AdminTheme />} />
         </Route>

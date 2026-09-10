@@ -39,19 +39,28 @@ export const ProductsPage = () => {
     'Teacher Codes': ['Physics / فيزياء', 'Chemistry / كيمياء', 'Biology / أحياء', 'Geology / جيولوجيا', 'Arabic / لغة عربية', 'Math / رياضيات']
   };
 
+  const normalizeGrade = (g) => {
+    if (!g) return '';
+    if (g.includes('3rd') || g.includes('الثالث') || g.includes('ثانوية عامة')) return '3rd';
+    if (g.includes('2nd') || g.includes('الثاني') || g.includes('تانية')) return '2nd';
+    if (g.includes('1st') || g.includes('الأول') || g.includes('الاول') || g.includes('أولى')) return '1st';
+    if (g.includes('Baccalaureate') || g.includes('بكالوريا')) return 'bac';
+    return g;
+  };
+
   const grades = [
-    { id: 'All', label: 'الكل (All)' },
-    { id: '3rd Secondary', label: 'الصف الثالث الثانوي (Thanaweya)' },
+    { id: 'All', label: 'جميع الصفوف' },
+    { id: '3rd Secondary', label: 'الصف الثالث الثانوي' },
     { id: '2nd Secondary', label: 'الصف الثاني الثانوي' },
-    { id: '1st Secondary', label: 'الصف الأول الثانوي' },
-    { id: 'Baccalaureate', label: 'البكالوريا الدولية / لغات' }
+    { id: '1st Secondary', label: 'الصف الاول الثانوي' },
+    { id: 'Baccalaureate', label: 'بكالوريا' }
   ];
 
   // Filtering Logic
   const filteredProducts = products.filter(p => {
     const matchCategory = selectedCategory === 'All' || p.category === selectedCategory;
     const matchSubCategory = selectedSubCategory === 'All' || p.subCategory === selectedSubCategory;
-    const matchGrade = selectedGrade === 'All' || p.grade === selectedGrade || p.grade === 'All Grades';
+    const matchGrade = selectedGrade === 'All' || p.grade === 'All Grades' || normalizeGrade(p.grade) === normalizeGrade(selectedGrade);
     const matchSearch = !searchQuery.trim() || 
       p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (p.titleEn && p.titleEn.toLowerCase().includes(searchQuery.toLowerCase())) ||

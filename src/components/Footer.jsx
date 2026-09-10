@@ -20,52 +20,54 @@ export const Footer = () => {
       <div className="container">
         
         {/* Promotional Social Media Banner */}
-        <div className="bg-gradient-to-r from-sky-600 via-sky-500 to-sky-400 rounded-2xl p-6 sm:p-8 mb-12 shadow-xl shadow-sky-900/30 text-center relative overflow-hidden">
-          <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-3.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider text-white">
-              <Sparkles size={14} className="text-yellow-300 animate-spin" />
-              <span>مفاجأة لطلبة الثانوية العامة والبكالوريا</span>
-            </div>
-            
-            <h3 className="text-xl sm:text-2xl font-black text-white leading-tight">
-              {theme?.socialPromoTitle || 'Follow us on social media—you might get a free gift with your package! 🌚'}
-            </h3>
-            
-            <p className="text-sm text-sky-50 font-medium">
-              {theme?.socialPromoSubtitle || 'تابعنا على صفحاتنا الرسمية وقناة الواتساب لتدخل السحب على هدايا مجانية وملازم حصرية مع كل أوردر!'}
-            </p>
+        {theme?.showSocialPromo !== false && (
+          <div className="bg-gradient-to-r from-sky-600 via-sky-500 to-sky-400 rounded-2xl p-6 sm:p-8 mb-12 shadow-xl shadow-sky-900/30 text-center relative overflow-hidden">
+            <div className="relative z-10 max-w-2xl mx-auto space-y-4">
+              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-3.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider text-white">
+                <Sparkles size={14} className="text-yellow-300 animate-spin" />
+                <span>مفاجأة لطلبة الثانوية العامة والبكالوريا</span>
+              </div>
+              
+              <h3 className="text-xl sm:text-2xl font-black text-white leading-tight">
+                {theme?.socialPromoTitle || 'Follow us on social media—you might get a free gift with your package! 🌚'}
+              </h3>
+              
+              <p className="text-sm text-sky-50 font-medium">
+                {theme?.socialPromoSubtitle || 'تابعنا على صفحاتنا الرسمية وقناة الواتساب لتدخل السحب على هدايا مجانية وملازم حصرية مع كل أوردر!'}
+              </p>
 
-            {/* Social Media Link Buttons */}
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-              <a
-                href={theme?.facebookUrl || 'https://www.facebook.com/share/1GpZ82sdxr/'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn bg-white text-sky-700 hover:bg-sky-50 text-sm font-bold shadow-md hover:scale-105 transition-transform"
-              >
-                <span>فيسبوك (Facebook)</span>
-              </a>
+              {/* Social Media Link Buttons */}
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <a
+                  href={theme?.facebookUrl || 'https://www.facebook.com/share/1GpZ82sdxr/'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn bg-white text-sky-700 hover:bg-sky-50 text-sm font-bold shadow-md hover:scale-105 transition-transform"
+                >
+                  <span>فيسبوك (Facebook)</span>
+                </a>
 
-              <a
-                href={theme?.instagramUrl || 'https://www.instagram.com/torke.stor?igsh=MWxleHRzcmZndm5tNg=='}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn bg-white text-pink-600 hover:bg-pink-50 text-sm font-bold shadow-md hover:scale-105 transition-transform"
-              >
-                <span>إنستجرام (Instagram)</span>
-              </a>
+                <a
+                  href={theme?.instagramUrl || 'https://www.instagram.com/torke.stor?igsh=MWxleHRzcmZndm5tNg=='}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn bg-white text-pink-600 hover:bg-pink-50 text-sm font-bold shadow-md hover:scale-105 transition-transform"
+                >
+                  <span>إنستجرام (Instagram)</span>
+                </a>
 
-              <a
-                href={theme?.whatsappChannelUrl || 'https://whatsapp.com/channel/0029VbCCfr9EgGfHFSx37T2X'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn bg-emerald-500 text-white hover:bg-emerald-600 text-sm font-bold shadow-md hover:scale-105 transition-transform"
-              >
-                <span>قناة الواتساب الرسمية (Channel)</span>
-              </a>
+                <a
+                  href={theme?.whatsappChannelUrl || 'https://whatsapp.com/channel/0029VbCCfr9EgGfHFSx37T2X'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn bg-emerald-500 text-white hover:bg-emerald-600 text-sm font-bold shadow-md hover:scale-105 transition-transform"
+                >
+                  <span>قناة الواتساب الرسمية (Channel)</span>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Footer Main Columns */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-slate-800">

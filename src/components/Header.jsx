@@ -104,13 +104,15 @@ export const Header = () => {
   return (
     <header className="header-wrapper sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-sky-100 shadow-sm" ref={dropdownRef}>
       {/* Top Student Announcement Bar */}
-      <div 
-        className="text-white text-xs sm:text-sm py-2 px-4 text-center font-bold flex items-center justify-center gap-2 shadow-sm"
-        style={{ background: `linear-gradient(135deg, ${theme?.accentColor || '#00BFFF'}, ${theme?.primaryColor || '#0284c7'})` }}
-      >
-        <Sparkles size={16} className="animate-pulse text-amber-300" />
-        <span>{theme?.announcementText || 'خصومات بداية العام لطلبة الثانوية العامة والبكالوريا! شحن سريع لباب بيتك 🚀'}</span>
-      </div>
+      {theme?.showAnnouncement !== false && (
+        <div 
+          className="text-white text-xs sm:text-sm py-2 px-4 text-center font-bold flex items-center justify-center gap-2 shadow-sm"
+          style={{ background: `linear-gradient(135deg, ${theme?.accentColor || '#00BFFF'}, ${theme?.primaryColor || '#0284c7'})` }}
+        >
+          <Sparkles size={16} className="animate-pulse text-amber-300" />
+          <span>{theme?.announcementText || 'خصومات بداية العام لطلبة الثانوية العامة والبكالوريا! شحن سريع لباب بيتك 🚀'}</span>
+        </div>
+      )}
 
       <div className="container">
         <div className="header-content flex items-center justify-between h-20 gap-4">

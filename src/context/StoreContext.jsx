@@ -9,10 +9,26 @@ export const DEFAULT_THEME = {
   logoHighlight: 'Store',
   
   // Announcement Bar
-  showAnnouncement: true,
   announcementText: 'خصومات بداية العام لطلبة الثانوية العامة والبكالوريا! شحن سريع لباب بيتك 🚀',
   announcementBg: '#0284c7',
   
+  // Section Visibility Controls (إظهار وإخفاء أقسام المتجر)
+  showAnnouncement: true,
+  showHero: true,
+  showCategories: true,
+  showBestSellers: true,
+  showTeacherCodesBanner: true,
+  showReviews: false, // قسم آراء الطلاب معطل افتراضياً
+  showFaq: true,
+  showSocialPromo: true,
+
+  // Customizable Section Headers
+  bestSellersTitle: 'مستلزمات تفوقك في الثانوية العامة',
+  bestSellersBadge: 'الأكثر طلباً هذا الأسبوع',
+  teacherCodesTitle: 'اشحن رصيد منصات كبار المدرسين في دقائق',
+  teacherCodesBadge: 'أكواد المنصات التعليمية الرسمية',
+  teacherCodesSubtitle: 'لا داعي للانتظار في السنتر أو مشاكل الدفع الإلكتروني. اختر المدرس، أتمم طلبك، واستلم كود التفعيل الفوري مع الدعم الفني.',
+
   // Typography & Aesthetics
   fontFamily: 'Cairo', // 'Cairo' | 'Alexandria' | 'Tajawal' | 'Almarai' | 'Readex Pro'
   fontSizeScale: '100%', // '90%' | '100%' | '110%'

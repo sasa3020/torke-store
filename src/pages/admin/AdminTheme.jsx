@@ -389,6 +389,68 @@ export const AdminTheme = () => {
           </Section>
 
           {/* ═══════════════════════════════════════════════════════════
+              SECTIONS VISIBILITY MANAGER (إظهار وإخفاء أي قسم)
+          ═══════════════════════════════════════════════════════════ */}
+          <Section
+            id="sections_visibility"
+            icon={<Eye size={18} />}
+            color="bg-pink-600"
+            title="التحكم في أقسام المتجر (إظهار / إخفاء أي قسم)"
+            subtitle="شغّل أو أوقف أي جزء من الصفحة الرئيسية بنقرة واحدة"
+            isOpen={openSections.sections_visibility}
+            onToggle={handleToggleSection}
+          >
+            <div className="space-y-3">
+              {[
+                { key: 'showHero', title: 'البانر الرئيسي العلوي (Hero)', desc: 'العنوان الكبير والشعارات والأزرار' },
+                { key: 'showCategories', title: 'بطاقات الأقسام السريعة (3 كروت)', desc: 'كتب خارجية، كشاكيل تورك، أكواد منصات' },
+                { key: 'showBestSellers', title: 'قسم الأكثر طلباً والمنتجات', desc: 'كاتالوج المنتجات مع فلاتر المراحل الدراسية' },
+                { key: 'showTeacherCodesBanner', title: 'بانر أكواد منصات المدرسين (الشريط الداكن)', desc: 'شحن رصيد منصات كبار المدرسين مع كروت المدرسين' },
+                { key: 'showFaq', title: 'قسم الأسئلة الشائعة (FAQ)', desc: 'قائمة الأسئلة الأكثر تكراراً وحلولها' },
+                { key: 'showAnnouncement', title: 'شريط الإعلانات العلوي', desc: 'الشريط المتحرك بأعلى الموقع' },
+              ].map((sec) => (
+                <div key={sec.key} className="flex items-center justify-between p-3.5 bg-slate-800/80 rounded-2xl border border-slate-700">
+                  <div>
+                    <p className="text-xs font-bold text-white">{sec.title}</p>
+                    <p className="text-[11px] text-slate-400">{sec.desc}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => update(sec.key, formTheme[sec.key] === false ? true : false)}
+                    className={`flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-xl transition-all ${
+                      formTheme[sec.key] !== false
+                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                    }`}
+                  >
+                    {formTheme[sec.key] !== false ? (
+                      <><ToggleRight size={18} /><span>ظاهر</span></>
+                    ) : (
+                      <><ToggleLeft size={18} /><span>مخفي</span></>
+                    )}
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-4 border-t border-slate-700 space-y-3">
+              <h4 className="text-xs font-bold text-sky-400">تعديل عناوين ونصوص الأقسام:</h4>
+              <Field label="عنوان قسم الأكثر طلباً:">
+                <TextInput value={formTheme.bestSellersTitle} onChange={(e) => update('bestSellersTitle', e.target.value)} />
+              </Field>
+              <Field label="بادج قسم الأكثر طلباً (الشارة):">
+                <TextInput value={formTheme.bestSellersBadge} onChange={(e) => update('bestSellersBadge', e.target.value)} />
+              </Field>
+              <Field label="عنوان قسم أكواد المدرسين:">
+                <TextInput value={formTheme.teacherCodesTitle} onChange={(e) => update('teacherCodesTitle', e.target.value)} />
+              </Field>
+              <Field label="وصف قسم أكواد المدرسين:">
+                <TextareaInput value={formTheme.teacherCodesSubtitle} onChange={(e) => update('teacherCodesSubtitle', e.target.value)} rows={2} />
+              </Field>
+            </div>
+          </Section>
+
+          {/* ═══════════════════════════════════════════════════════════
               4. HERO SECTION
           ═══════════════════════════════════════════════════════════ */}
           <Section

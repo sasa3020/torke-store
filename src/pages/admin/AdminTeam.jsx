@@ -25,16 +25,20 @@ export const AdminTeam = () => {
     name: '',
     email: '',
     phone: '',
-    role: 'Order Manager'
+    password: '',
+    role: 'Sales'
   };
 
   const [formData, setFormData] = useState(initialForm);
 
   const roles = [
-    { id: 'Super Admin', label: 'Super Admin (مدير عام بكافة الصلاحيات)' },
-    { id: 'Order Manager', label: 'Order Manager (إدارة واعتماد إيصالات الطلبات)' },
-    { id: 'Catalog Specialist', label: 'Catalog Specialist (إدارة وتحديث الكتب والكشاكيل)' },
-    { id: 'Customer Support', label: 'Customer Support (الدعم الفني ومتابعة الواتساب)' },
+    { id: 'Super Admin',        label: 'Super Admin — مدير عام بكافة الصلاحيات' },
+    { id: 'Developer',          label: 'Developer — مبرمج بكافة الصلاحيات' },
+    { id: 'Management',         label: 'Management — إدارة بكافة الصلاحيات' },
+    { id: 'Sales',              label: 'Sales — مبيعات (منتجات + أوردرات فقط)' },
+    { id: 'Order Manager',      label: 'Order Manager — متابعة الطلبات فقط' },
+    { id: 'Catalog Specialist', label: 'Catalog Specialist — إدارة المنتجات فقط' },
+    { id: 'Customer Support',   label: 'Customer Support — دعم وأوردرات' },
   ];
 
   const handleOpenAdd = () => {
@@ -48,6 +52,7 @@ export const AdminTeam = () => {
       name: member.name,
       email: member.email,
       phone: member.phone || '',
+      password: member.password || '',
       role: member.role
     });
     setEditingStaffId(member.id);
@@ -241,6 +246,19 @@ export const AdminTeam = () => {
                     <option key={r.id} value={r.id}>{r.label}</option>
                   ))}
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-slate-300 font-bold mb-1">كلمة المرور *</label>
+                <input
+                  type="password"
+                  required
+                  placeholder="كلمة مرور مخصصة لهذا الموظف"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-mono"
+                />
+                <p className="text-[10px] text-slate-500 mt-1">سيستخدمها الموظف لتسجيل الدخول للوحة التحكم</p>
               </div>
 
               <div className="pt-3 border-t border-slate-800 flex justify-end gap-2">

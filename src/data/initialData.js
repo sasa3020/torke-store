@@ -111,10 +111,10 @@ export const INITIAL_PRODUCTS = [
     features: ['Covers Standard & Higher Level modules', 'Data-response paper questions', 'Worked formula solutions']
   },
 
-  // --- NOTEBOOKS (كشاكيل وملخصات تورك) ---
+  // --- NOTEBOOKS (كشاكيل وملخصات تركي) ---
   {
     id: 'prod-n1',
-    title: 'كشكول تورك الذكي المقسم سلك 200 صفحة (مقاوم للماء والتمزق)',
+    title: 'كشكول تركي الذكي المقسم سلك 200 صفحة (مقاوم للماء والتمزق)',
     titleEn: 'Torke Premium 5-Subject Wirebound Notebook (200 Pages)',
     category: 'Notebooks',
     subCategory: 'Wirebound Notebooks',
@@ -127,12 +127,12 @@ export const INITIAL_PRODUCTS = [
     reviewsCount: 310,
     badge: 'Torke Exclusive',
     image: 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80',
-    description: 'كشكول تورك الحصري المصنوع من ورق كوشيه عالي الكثافة (80 جرام) لا يطبع الحبر، مع 5 فواصل بلاستيكية ملونة وجيب داخلي للخرائط والملاحظات.',
+    description: 'كشكول تركي الحصري المصنوع من ورق كوشيه عالي الكثافة (80 جرام) لا يطبع الحبر، مع 5 فواصل بلاستيكية ملونة وجيب داخلي للخرائط والملاحظات.',
     features: ['ورق ياباني فاخر 80 جرام لا يشف الحبر الجاف أو السائل', '5 فواصل ملونة لتنظيم 5 مواد مختلفة', 'غلاف بولي بروبلين قوي مقاوم للسوائل والصدمات']
   },
   {
     id: 'prod-n2',
-    title: 'باكدج 3 كشاكيل تورك بنظام كورنيل للملخصات ومراجعة ليلة الامتحان',
+    title: 'باكدج 3 كشاكيل تركي بنظام كورنيل للملخصات ومراجعة ليلة الامتحان',
     titleEn: 'Torke Cornell Method Summary Pads (Pack of 3)',
     category: 'Notebooks',
     subCategory: 'Lecture Revision Pads',
@@ -150,7 +150,7 @@ export const INITIAL_PRODUCTS = [
   },
   {
     id: 'prod-n3',
-    title: 'كشكول تورك للرسم البياني وتجارب الفيزياء والكيمياء (Grid & Graph)',
+    title: 'كشكول تركي للرسم البياني وتجارب الفيزياء والكيمياء (Grid & Graph)',
     titleEn: 'Torke Science Grid & Lab Notebook 100 Pages',
     category: 'Notebooks',
     subCategory: 'Grid & Graph Notes',
@@ -168,7 +168,7 @@ export const INITIAL_PRODUCTS = [
   },
   {
     id: 'prod-n4',
-    title: 'دفتر تورك الجيبي لقوانين الفيزياء والكيمياء والرياضيات (Pocket Formula)',
+    title: 'دفتر تركي الجيبي لقوانين الفيزياء والكيمياء والرياضيات (Pocket Formula)',
     titleEn: 'Torke Pocket Formula & Cheat-Sheet Pad',
     category: 'Notebooks',
     subCategory: 'Pocket Formula Summaries',
@@ -295,24 +295,55 @@ export const INITIAL_STAFF = [
     email: 'admin@torke.store',
     role: 'Super Admin',
     phone: '+20 15 15856581',
+    password: 'torke506070',
     dateJoined: '2024-01-15'
   },
   {
     id: 'staff-2',
     name: 'Youssef El-Sayed',
     email: 'youssef@torke.store',
-    role: 'Order Manager',
+    role: 'Sales',
     phone: '+20 10 98765432',
+    password: 'sales123',
     dateJoined: '2024-02-01'
   },
   {
     id: 'staff-3',
     name: 'Mariam Adel',
     email: 'mariam@torke.store',
-    role: 'Catalog Specialist',
+    role: 'Management',
     phone: '+20 12 34567890',
+    password: 'manage123',
     dateJoined: '2024-03-10'
   }
 ];
 
 export const INITIAL_USER = null;
+ 
+export const INITIAL_FAQS = [
+  {
+    id: 'faq-1',
+    q: 'How to order? (كيفية الطلب من متجر تركي؟)',
+    a: 'الطلب بسيط وسريع جداً:\n1. اختر الكتب، الكشاكيل، أو أكواد المدرسين التي تحتاجها واضغط "إضافة للسلة".\n2. افتح السلة واضغط على "المتابعة لإنهاء الطلب (Checkout)".\n3. اكتب بيانات التوصيل بدقة (الاسم، العنوان، ورقم الهاتف الأساسي والبديل).\n4. اختر وسيلة الشحن المناسبة (عادي أو صاروخ)، ثم اتبع تعليمات الدفع المعروضة في صفحة الدفع وارفع صورة إيصال التحويل لتأكيد حجزك فوراً.'
+  },
+  {
+    id: 'faq-2',
+    q: 'Available payment methods? (ما هي طرق الدفع المتاحة؟)',
+    a: 'الوسيلة المعتمدة والمفضلة لطلابنا هي التحويل الإلكتروني عبر (Vodafone Cash). يتم إظهار رقم التحويل المعتمد حصرياً في صفحة الدفع والتشيك آوت (Checkout Page) عند تأكيد الطلب فقط لضمان سلامة العمليات ومطابقة الإيصالات، حيث يقوم الطالب برفع لقطة شاشة (Screenshot) للإيصال ليتم مراجعتها واعتماد الطلب فورياً.'
+  },
+  {
+    id: 'faq-3',
+    q: 'Delivery timeframes? (كم تستغرق مدة توصيل الشحنة؟)',
+    a: 'نوفر خيارين للشحن بما يناسب جدول مذاكرتك:\n• الشحن السريع بالصاروخ (Express "Rocket" Shipping): يتم التوصيل خلال يوم إلى 3 أيام (تكلفة 220 ج.م).\n• الشحن القياسي (Standard Shipping): يتم التوصيل خلال يومين إلى 10 أيام عمل لجميع المحافظات (تكلفة 85 ج.م).\n* بالنسبة لأكواد المدرسين: يتم إرسال كود المنصة فور مراجعة إيصال التحويل خلال دقائق عبر الواتساب ورسائل الموقع!'
+  },
+  {
+    id: 'faq-4',
+    q: 'Can I replace a damaged order? (هل يمكنني استبدال الطلب في حال وجود تلف؟)',
+    a: 'نعم بكل تأكيد! نحن نضمن لك سلامة الكتب والكشاكيل 100%. إذا استلمت أي كتاب به خطأ في الطباعة أو كشكول تالف بسبب الشحن، تواصل فوراً مع خدمة العملاء عبر الواتساب مع تصوير التلف، وسنقوم بإرسال نسخة جديدة بديلة لك مجاناً بالكامل دون أي مصاريف إضافية.'
+  },
+  {
+    id: 'faq-5',
+    q: 'How to contact support? (كيف أتواصل مع الدعم الفني لمتجر تركي؟)',
+    a: 'فريق خدمة طلاب تركي متاح يومياً لمساعدتك:\n• عبر الواتساب المباشر: +20 15 15856581\n• عبر رسائل صفحتنا الرسمية على الفيسبوك أو الإنستجرام\n• قنوات التليجرام والواتساب لمتابعة كل جديد وأكواد الحصص.'
+  }
+];

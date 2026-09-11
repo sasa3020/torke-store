@@ -952,7 +952,7 @@ ${itemsList}
                     <div className="flex items-start justify-between">
                       <div>
                         <div className="text-sm font-black text-slate-800">{theme?.standardShippingName || 'الشحن القياسي (Standard)'}</div>
-                        <div className="text-xs text-slate-500 mt-0.5">{theme?.standardShippingTime || 'التوصيل خلال 3 إلى 5 أيام عمل'}</div>
+                        <div className="text-xs text-slate-500 mt-0.5">{theme?.standardShippingTime || 'التوصيل خلال يومين إلى 10 أيام عمل'}</div>
                       </div>
                       <span className="text-sm font-extrabold text-sky-700">{standardCost} ج.م</span>
                     </div>
@@ -977,7 +977,7 @@ ${itemsList}
                     <div className="flex items-start justify-between mt-1">
                       <div>
                         <div className="text-sm font-black text-slate-800">{theme?.expressShippingName || 'شحن صاروخ (Express Rocket)'}</div>
-                        <div className="text-xs text-slate-500 mt-0.5">{theme?.expressShippingTime || 'خلال 24 إلى 48 ساعة فقط'}</div>
+                        <div className="text-xs text-slate-500 mt-0.5">{theme?.expressShippingTime || 'خلال يوم إلى 3 أيام فقط'}</div>
                       </div>
                       <span className="text-sm font-extrabold text-sky-700">{expressCost} ج.م</span>
                     </div>

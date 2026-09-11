@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { INITIAL_PRODUCTS, INITIAL_STAFF, INITIAL_USER } from '../data/initialData';
+import { INITIAL_PRODUCTS, INITIAL_STAFF, INITIAL_USER, INITIAL_FAQS } from '../data/initialData';
 
 export const DEFAULT_THEME = {
   // Brand & Identity
   storeName: 'Torke Store',
-  storeNameAr: 'متجر تورك لطلاب الثانوية',
+  storeNameAr: 'متجر تركي لطلاب الثانوية',
   logoText: 'Torke',
   logoHighlight: 'Store',
   
@@ -72,9 +72,9 @@ export const DEFAULT_THEME = {
   standardShippingRate: 85,
   expressShippingRate: 220,
   standardShippingName: 'الشحن القياسي (Standard)',
-  standardShippingTime: 'التوصيل خلال 3 إلى 5 أيام عمل',
+  standardShippingTime: 'التوصيل خلال يومين إلى 10 أيام عمل',
   expressShippingName: 'شحن صاروخ (Express Rocket)',
-  expressShippingTime: 'خلال 24 إلى 48 ساعة فقط',
+  expressShippingTime: 'خلال يوم إلى 3 أيام فقط',
 
   // Support & Social Media
   whatsappNumber: '+20 15 15856581',
@@ -394,6 +394,55 @@ export const StoreProvider = ({ children }) => {
     setStaff(prev => prev.filter(m => m.id !== id));
   };
 
+  // 6b. Staff Authentication (Role-Based Access Control)
+  // Permissions map: which pages each role can access
+  const ROLE_PERMISSIONS = {
+    'Super Admin':  { dashboard: true, orders: true, products: true, pages: true, team: true, theme: true },
+    'Developer':    { dashboard: true, orders: true, products: true, pages: true, team: true, theme: true },
+    'Management':   { dashboard: true, orders: true, products: true, pages: true, team: true, theme: true },
+    'Sales':        { dashboard: true, orders: true, products: true, pages: false, team: false, theme: false },
+    'Order Manager':       { dashboard: true, orders: true, products: false, pages: false, team: false, theme: false },
+    'Catalog Specialist':  { dashboard: true, orders: false, products: true, pages: false, team: false, theme: false },
+    'Customer Support':    { dashboard: true, orders: true, products: false, pages: false, team: false, theme: false },
+  };
+
+  const [currentStaff, setCurrentStaff] = useState(() => {
+    const saved = localStorage.getItem('torke_current_staff');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) { console.error(e); }
+    }
+    return null;
+  });
+
+  useEffect(() => {
+    if (currentStaff) {
+      localStorage.setItem('torke_current_staff', JSON.stringify(currentStaff));
+    } else {
+      localStorage.removeItem('torke_current_staff');
+    }
+  }, [currentStaff]);
+
+  const staffLogin = (email, password) => {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const cleanPass = (password || '').trim();
+    const found = staff.find(m =>
+      m.email.toLowerCase() === cleanEmail && m.password === cleanPass
+    );
+    if (found) {
+      setCurrentStaff(found);
+      return { success: true, member: found };
+    }
+    return { success: false, message: 'البريد الإلكتروني أو كلمة المرور غير صحيحة!' };
+  };
+
+  const staffLogout = () => {
+    setCurrentStaff(null);
+  };
+
+  const getStaffPermissions = (role) => {
+    return ROLE_PERMISSIONS[role] || { dashboard: true, orders: false, products: false, pages: false, team: false, theme: false };
+  };
+
   // 7. UI Drawers & Modals
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -451,6 +500,13 @@ export const StoreProvider = ({ children }) => {
         addStaff,
         updateStaff,
         deleteStaff,
+
+        // Staff Auth & RBAC
+        currentStaff,
+        staffLogin,
+        staffLogout,
+        getStaffPermissions,
+        ROLE_PERMISSIONS,
 
         // Modals & Drawers
         isCartDrawerOpen,

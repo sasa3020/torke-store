@@ -20,8 +20,7 @@ import {
   Crown,
   Code2,
   Briefcase,
-  TrendingUp,
-  BadgeAlert
+  TrendingUp
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 
@@ -184,13 +183,7 @@ export const AdminLayout = () => {
             </button>
           </form>
 
-          {/* Staff hint */}
-          <div className="p-3 bg-slate-800/60 rounded-xl border border-slate-700 text-[10px] text-slate-400 space-y-1">
-            <p className="font-bold text-slate-300 flex items-center gap-1"><BadgeAlert size={12} /> بيانات الدخول للتجربة:</p>
-            <p>🔑 Super Admin: <span className="font-mono text-sky-400">admin@torke.store</span> / <span className="font-mono text-sky-400">torke506070</span></p>
-            <p>📦 Sales: <span className="font-mono text-emerald-400">youssef@torke.store</span> / <span className="font-mono text-emerald-400">sales123</span></p>
-            <p>⚙️ Management: <span className="font-mono text-amber-400">mariam@torke.store</span> / <span className="font-mono text-amber-400">manage123</span></p>
-          </div>
+
 
           {/* Back to store */}
           <div className="pt-4 border-t border-slate-800 text-center">
